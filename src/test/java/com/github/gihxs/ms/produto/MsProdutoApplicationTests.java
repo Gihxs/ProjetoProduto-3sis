@@ -1,4 +1,4 @@
-package com.github.cidarosa.ms.produto;
+package com.github.gihxs.ms.produto;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

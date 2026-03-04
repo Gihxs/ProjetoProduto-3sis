@@ -1,6 +1,6 @@
-package com.github.cidarosa.ms.produto.dto;
+package com.github.gihxs.ms.produto.dto;
 
-import com.github.cidarosa.ms.produto.entities.Produto;
+import com.github.gihxs.ms.produto.entities.Produto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

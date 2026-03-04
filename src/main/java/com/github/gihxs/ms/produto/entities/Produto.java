@@ -1,4 +1,4 @@
-package com.github.cidarosa.ms.produto.entities;
+package com.github.gihxs.ms.produto.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
