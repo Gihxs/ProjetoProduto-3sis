@@ -1,5 +1,6 @@
 package com.github.gihxs.ms.produto.dto;
 
+import com.github.gihxs.ms.produto.entities.Categoria;
 import com.github.gihxs.ms.produto.entities.Produto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -28,10 +29,14 @@ public class ProdutoDTO {
     @Positive(message = "O campo valor deve ser um número positivo e maior que zero")
     private Double valor;
 
+    @NotNull(message = "Campo categoria é requerido")
+     private CategoriaDTO categoria;
+
     public ProdutoDTO(Produto produto) {
         id = produto.getId();
         nome = produto.getNome();
         descricao = produto.getDescricao();
         valor = produto.getValor();
+        categoria = new CategoriaDTO(produto.getCategoria());
     }
 }
