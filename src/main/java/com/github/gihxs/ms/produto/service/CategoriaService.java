@@ -2,11 +2,14 @@ package com.github.gihxs.ms.produto.service;
 
 import com.github.gihxs.ms.produto.dto.CategoriaDTO;
 import com.github.gihxs.ms.produto.entities.Categoria;
+import com.github.gihxs.ms.produto.exceptions.DatabaseException;
 import com.github.gihxs.ms.produto.exceptions.ResourceNotFoundException;
 import com.github.gihxs.ms.produto.repositories.CategoriaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
@@ -47,6 +50,17 @@ public class CategoriaService {
         } catch (EntityNotFoundException ex){
             throw new ResourceNotFoundException("Recurso não encontrado. Id: " + id);
         }
+    }
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public void deleteCategoriaById(Long id){
+         if(!categoriaRepository.existsById(id)){
+             throw new ResourceNotFoundException("Recurso não encontrado. ID: " + id);
+         }
+         try {
+             categoriaRepository.deleteById(id);
+         } catch (DataIntegrityViolationException e){
+             throw new DatabaseException("Não foi possível excluir a categoria. Existem produtos associados a ela.");
+         }
     }
 }
 

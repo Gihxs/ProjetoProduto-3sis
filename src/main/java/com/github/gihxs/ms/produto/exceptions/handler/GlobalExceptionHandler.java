@@ -1,5 +1,6 @@
 package com.github.gihxs.ms.produto.exceptions.handler;
 
+import com.github.gihxs.ms.produto.exceptions.DatabaseException;
 import com.github.gihxs.ms.produto.exceptions.ResourceNotFoundException;
 import com.github.gihxs.ms.produto.exceptions.dto.CustomErrorDTO;
 import com.github.gihxs.ms.produto.exceptions.dto.ValidationErrorDTO;
@@ -71,5 +72,14 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(status).body(err);
     }
+    @ExceptionHandler(DatabaseException.class)
+    public ResponseEntity<CustomErrorDTO> handlerDatabase(DatabaseException e, HttpServletRequest request){
 
+        HttpStatus status = HttpStatus.CONFLICT; // 409
+        CustomErrorDTO err = new CustomErrorDTO(Instant.now(), status.value(),
+                e.getMessage(), request.getRequestURI());
+
+    return ResponseEntity.status(status).body(err);
+
+    }
 }
