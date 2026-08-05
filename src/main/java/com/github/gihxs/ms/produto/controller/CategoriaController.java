@@ -1,6 +1,7 @@
 package com.github.gihxs.ms.produto.controller;
 
-import com.github.gihxs.ms.produto.dto.CategoriaDTO;
+import com.github.gihxs.ms.produto.dto.CategoriaRequestDTO;
+import com.github.gihxs.ms.produto.dto.CategoriaResponseDTO;
 import com.github.gihxs.ms.produto.service.CategoriaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,41 +20,41 @@ public class CategoriaController {
     private CategoriaService categoriaService;
 
     @GetMapping
-    public ResponseEntity<List<CategoriaDTO>> getAllCategorias() {
+    public ResponseEntity<List<CategoriaResponseDTO>> getAllCategorias() {
 
-        List<CategoriaDTO> categorias = categoriaService.findAllCategorias();
+        List<CategoriaResponseDTO> categorias = categoriaService.findAllCategorias();
 
         return ResponseEntity.ok(categorias);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoriaDTO> getCategoriaById(@PathVariable Long id) {
+    public ResponseEntity<CategoriaResponseDTO> getCategoriaById(@PathVariable Long id) {
 
-        CategoriaDTO categoriaDto = categoriaService.findCategoriaById(id);
+        CategoriaResponseDTO categoriaDto = categoriaService.findCategoriaById(id);
         return ResponseEntity.ok(categoriaDto);
 
     }
 
     @PostMapping
-    public ResponseEntity<CategoriaDTO> createCategoria(@RequestBody @Valid CategoriaDTO categoriaDto) {
+    public ResponseEntity<CategoriaResponseDTO> createCategoria(@RequestBody @Valid CategoriaRequestDTO inputDto) {
 
-        categoriaDto = categoriaService.saveCategoria(categoriaDto);
+        CategoriaResponseDTO categoriaResponseDto = categoriaService.saveCategoria(inputDto);
 
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequestUri()
                 .path("/{id}")
-                .buildAndExpand(categoriaDto.getId())
+                .buildAndExpand(categoriaResponseDto.getId())
                 .toUri();
 
-        return ResponseEntity.created(uri).body(categoriaDto);
+        return ResponseEntity.created(uri).body(categoriaResponseDto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CategoriaDTO> updateCategoria(@PathVariable Long id,
-                                                        @Valid @RequestBody CategoriaDTO categoriaDto) {
+    public ResponseEntity<CategoriaResponseDTO> updateCategoria(@PathVariable Long id,
+                                                                @Valid @RequestBody CategoriaRequestDTO inputDto) {
 
-        categoriaDto = categoriaService.updateCategoria(id, categoriaDto);
-        return ResponseEntity.ok(categoriaDto);
+        CategoriaResponseDTO categoriaResponseDto = categoriaService.updateCategoria(id, inputDto);
+        return ResponseEntity.ok(categoriaResponseDto);
     }
 
     @DeleteMapping("/{id}")

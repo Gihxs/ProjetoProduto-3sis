@@ -1,6 +1,7 @@
 package com.github.gihxs.ms.produto.service;
 
-import com.github.gihxs.ms.produto.dto.ProdutoDTO;
+import com.github.gihxs.ms.produto.dto.ProdutoRequestDTO;
+import com.github.gihxs.ms.produto.dto.ProdutoResponseDTO;
 import com.github.gihxs.ms.produto.entities.Categoria;
 import com.github.gihxs.ms.produto.entities.Produto;
 import com.github.gihxs.ms.produto.exceptions.DatabaseException;
@@ -25,45 +26,39 @@ public class ProdutoService {
     private CategoriaRepository categoriaRepository;
 
     @Transactional(readOnly = true)
-    public List<ProdutoDTO> findAllProdutos(){
+    public List<ProdutoResponseDTO> findAllProdutos(){
 
         List<Produto> produtos = produtoRepository.findAll();
 
-        return produtos.stream().map(ProdutoDTO::new).toList();
+        return produtos.stream().map(ProdutoResponseDTO::new).toList();
     }
 
     @Transactional(readOnly = true)
-    public ProdutoDTO findProdutoById(Long id){
+    public ProdutoResponseDTO findProdutoById(Long id){
 
         Produto produto = produtoRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Recurso não encontrado. ID: " + id)
         );
 
-        return new ProdutoDTO(produto);
+        return new ProdutoResponseDTO(produto);
     }
 
     @Transactional
-    public ProdutoDTO saveProduto(ProdutoDTO produtoDTO){
-
-        try {
+    public ProdutoResponseDTO saveProduto(ProdutoRequestDTO requestDTO){
             Produto produto = new Produto();
             //metodo auxiliar para converter DTO para Entidade Produto
-            copyDtoToProduto(produtoDTO, produto);
+            copyDtoToProduto(requestDTO, produto);
             produto = produtoRepository.save(produto);
-            return new ProdutoDTO(produto);
-        } catch (DataIntegrityViolationException e) {
-            throw new DatabaseException("Não foi possível salvar Produto. Categoria inexistente ( ID: "
-                    + produtoDTO.getCategoria().getId() + " )");
-        }
+            return new ProdutoResponseDTO(produto);
     }
 
     @Transactional
-    public ProdutoDTO updateProduto(Long id, ProdutoDTO produtoDTO){
+    public ProdutoResponseDTO updateProduto(Long id, ProdutoRequestDTO responseDTO){
 
         try {
             Produto produto = produtoRepository.getReferenceById(id);
-            copyDtoToProduto(produtoDTO, produto);
-            return new ProdutoDTO(produto);
+            copyDtoToProduto(responseDTO, produto);
+            return new ProdutoResponseDTO(produto);
         } catch (EntityNotFoundException e) {
             throw new ResourceNotFoundException("Recurso não encontrado. ID: " + id);
         }
@@ -79,14 +74,15 @@ public class ProdutoService {
         produtoRepository.deleteById(id);
     }
 
-    private void copyDtoToProduto(ProdutoDTO produtoDTO, Produto produto) {
+    private void copyDtoToProduto(ProdutoRequestDTO requestDTO, Produto produto) {
 
-        produto.setNome(produtoDTO.getNome());
-        produto.setDescricao(produtoDTO.getDescricao());
-        produto.setValor(produtoDTO.getValor());
+        produto.setNome(requestDTO.getNome());
+        produto.setDescricao(requestDTO.getDescricao());
+        produto.setValor(requestDTO.getValor());
 
         //objeto completo gerenciado
-        Categoria categoria = categoriaRepository.getReferenceById(produtoDTO.getCategoria().getId());
+        Categoria categoria = categoriaRepository.findById(requestDTO.getCategoriaId()).orElseThrow(() -> new DatabaseException("Não foi possível salvar Produto. Categoria inexiste" + "(ID: " + requestDTO.getCategoriaId() + ")")
+        );
 
         produto.setCategoria(categoria);
     }

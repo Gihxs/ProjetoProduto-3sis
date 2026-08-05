@@ -1,6 +1,5 @@
 package com.github.gihxs.ms.produto.dto;
 
-import com.github.gihxs.ms.produto.entities.Categoria;
 import com.github.gihxs.ms.produto.entities.Produto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -13,9 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class ProdutoDTO {
-
-    private Long id;
+public class ProdutoRequestDTO {
 
     @NotBlank(message = "Campo nome é obrigatório")
     @Size(min = 3, max = 100, message = "O campo nome deve ter entre 3 e 100 caracters")
@@ -30,13 +27,12 @@ public class ProdutoDTO {
     private Double valor;
 
     @NotNull(message = "Campo categoria é requerido")
-     private CategoriaDTO categoria;
+     private Long categoriaId;
 
-    public ProdutoDTO(Produto produto) {
-        id = produto.getId();
+    public ProdutoRequestDTO(Produto produto) {
         nome = produto.getNome();
         descricao = produto.getDescricao();
         valor = produto.getValor();
-        categoria = new CategoriaDTO(produto.getCategoria());
+        categoriaId = produto.getCategoria().getId();
     }
 }

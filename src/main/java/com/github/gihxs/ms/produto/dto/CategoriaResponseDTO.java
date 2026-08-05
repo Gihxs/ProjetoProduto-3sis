@@ -10,14 +10,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class CategoriaDTO {
+public class CategoriaResponseDTO {
     private Long id;
-
-    @NotBlank(message = "Campo nome não pode ser vazio, nulo ou em branco")
-    @Size(min = 3, max = 100, message = "O Nome deve ter entre 3 e 100 caracteres")
     private String nome;
 
-    public CategoriaDTO(Categoria categoria){
+    public CategoriaResponseDTO(Categoria categoria){
         id = categoria.getId();
         nome = categoria.getNome();
     }
